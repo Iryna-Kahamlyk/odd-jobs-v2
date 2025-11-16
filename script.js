@@ -23,6 +23,12 @@
     const ordersView = document.getElementById('ordersView');
     const profileView = document.getElementById('profileView');
 
+        // --- Map state for Home view ---
+    let map = null;
+    let userMarker = null;
+    let mapInitialized = false;
+
+
     // optional home stats
     const statOpenCount = document.getElementById('statOpenCount');
 
@@ -233,6 +239,51 @@
     jobs = jobs.map(ensureJobShape);
     refreshProfileStats(); // initial
 
+        // Initialize Leaflet map on Home view
+    function initMap() {
+      if (mapInitialized) return;
+      const mapEl = document.getElementById('map');
+      if (!mapEl || !window.L) return; // Leaflet not loaded
+
+      // Default center: UBC
+      const defaultCenter = [49.2606, -123.2460];
+
+      map = L.map('map').setView(defaultCenter, 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Fallback marker (UBC) until we get real location
+      userMarker = L.marker(defaultCenter).addTo(map)
+        .bindPopup('Default location (UBC)').openPopup();
+
+      // Try browser geolocation for real user location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            const coords = [latitude, longitude];
+
+            map.setView(coords, 15);
+            if (userMarker) {
+              map.removeLayer(userMarker);
+            }
+            userMarker = L.marker(coords).addTo(map)
+              .bindPopup('You are here').openPopup();
+          },
+          (err) => {
+            console.warn('Geolocation error:', err);
+            // keep default UBC view
+          }
+        );
+      }
+
+      mapInitialized = true;
+    }
+
+
     // --- distance helper for filters ---
     function getDistance(lat1, lng1, lat2, lng2) {
       const R = 6371; // km
@@ -248,7 +299,7 @@
     }
 
     // --- View switching ---
-    function showView(view) {
+        function showView(view) {
       activeView = view;
       if (homeView) homeView.classList.toggle('hidden', view !== 'home');
       if (findView) findView.classList.toggle('hidden', view !== 'find');
@@ -262,6 +313,7 @@
       if (navOrders) navOrders.classList.toggle('active', view === 'orders');
       if (navProfile) navProfile.classList.toggle('active', view === 'profile');
 
+      if (view === 'home') initMap();
       if (view === 'orders') renderGrid();
       if (view === 'find') renderFindGrid();
       if (view === 'post') renderActiveListings();
@@ -656,7 +708,7 @@
         rowTop.className = 'row-top';
         const imgDiv = document.createElement('div');
         imgDiv.className = 'img';
-        //imgDiv.textContent = 'image';
+        imgDiv.textContent = 'image';
         const content = document.createElement('div');
         content.className = 'content';
         const title = document.createElement('div');
@@ -676,18 +728,18 @@
         }
 
         // keep Chat badge only in Orders, not in Find
-        //if (jobFilter && jobFilter.value === 'others') {
-        //  const badge = document.createElement('span');
-          //badge.style.display = 'inline-block';
-          //badge.style.padding = '6px 8px';
-          //badge.style.marginRight = '10px';
-          //badge.style.background = '#222';
-          //badge.style.color = 'white';
-          //badge.style.borderRadius = '6px';
-          //badge.style.fontSize = '12px';
-          //badge.textContent = 'Chat';
-          //content.appendChild(badge);
-        //}
+        if (jobFilter && jobFilter.value === 'others') {
+          const badge = document.createElement('span');
+          badge.style.display = 'inline-block';
+          badge.style.padding = '6px 8px';
+          badge.style.marginRight = '10px';
+          badge.style.background = '#222';
+          badge.style.color = 'white';
+          badge.style.borderRadius = '6px';
+          badge.style.fontSize = '12px';
+          badge.textContent = 'Chat';
+          content.appendChild(badge);
+        }
 
         const desc = document.createElement('div');
         desc.className = 'desc';

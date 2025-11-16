@@ -2,9 +2,17 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
+   <meta charset="utf-8" />
   <title>Odd Jobs — Demo</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Leaflet CSS for map -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <!-- Your main stylesheet -->
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -43,15 +51,19 @@
           <!-- Left: Map -->
           <div class="home-column">
             <h3 class="home-subtitle">Map View</h3>
-            <!-- Just a blank map box for now -->
-            <div class="home-map-box"></div>
+            <div class="home-map-box">
+              <!-- Leaflet map lives here -->
+              <div id="map"></div>
+            </div>
           </div>
 
-          <!-- Right: List -->
+          <!-- Right: List (can fill in later) -->
           <div class="home-column">
             <h3 class="home-subtitle">List View</h3>
             <div class="home-list-box">
-              <div class="home-list-pill"></div>
+              <p class="home-list-empty">
+                Jobs near you will show here soon.
+              </p>
             </div>
           </div>
         </div>
@@ -246,6 +258,8 @@
     </section>
 
   </main>
+  <!-- Leaflet JS for map -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script src="script.js"></script>
 </body>
