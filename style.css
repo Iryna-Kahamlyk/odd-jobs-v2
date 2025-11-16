@@ -27,86 +27,6 @@ body {
   min-height: 100vh;
 }
 
-/* ========== LOADER ========== */
-
-.loader-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--blue);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
-}
-
-.loader-logo-wrap {
-  width: 150px;
-  height: 150px;
-  border-radius: 40px;
-  background: rgba(15, 23, 42, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.6);
-  animation: loaderFloat 1.4s ease-in-out infinite alternate;
-  transform-origin: center;
-}
-
-.loader-logo {
-  width: 110px;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.4));
-  animation: loaderPop 0.7s ease-out;
-}
-
-@keyframes loaderFloat {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-18px);
-  }
-}
-
-@keyframes loaderPop {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* fly logo to nav corner */
-.loader-overlay.loader-fly .loader-logo-wrap {
-  animation: loaderFlyToCorner 0.7s forwards cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-@keyframes loaderFlyToCorner {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(calc(-50vw + 44px), calc(-50vh + 40px)) scale(0.32);
-    opacity: 0;
-  }
-}
-
-.loader-overlay.loader-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
 /* ========== TOP NAV ========== */
 .topnav {
   padding: 18px 24px;
@@ -115,7 +35,6 @@ body {
   box-shadow: 0 6px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* Container + logo */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -130,15 +49,14 @@ body {
   left: 0;
   position: absolute;
   top: 50%;
-  transform: translateY(-50%) scale(0.85);
-  opacity: 0;
-  transition: opacity 0.45s ease 0.2s, transform 0.45s ease 0.2s;
+  transform: translateY(-50%);
 }
 
-/* When loader finishes */
-body.app-ready .logo {
-  opacity: 1;
-  transform: translateY(-50%) scale(1);
+.topnav .nav-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 /* Menu */
@@ -179,7 +97,7 @@ body.app-ready .logo {
   margin-right: auto;
 }
 
-/* ========== POST JOB LAYOUT ========== */
+/* ========== POST JOB: TWO COLUMN LAYOUT ========== */
 .post-panel {
   display: flex;
   gap: 20px;
@@ -200,8 +118,7 @@ body.app-ready .logo {
 }
 
 /* ========== TABS (Orders) ========== */
-.tabs-row,
-.orders-tabs {
+.tabs-row {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
@@ -341,6 +258,23 @@ select {
   font-size: 13px;
 }
 
+/* ========== MODAL (unused) ========== */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  width: 520px;
+  background: white;
+  border-radius: 10px;
+  padding: 18px;
+}
+
 .hidden {
   display: none;
 }
@@ -379,6 +313,53 @@ select {
   gap: 24px;
 }
 
+.home-hero h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.home-hero p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.home-cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn.primary {
+  background: #1f9d95;
+  color: white;
+}
+
+.home-stats-row {
+  display: block;
+  flex-wrap: column;
+  gap: 16px;
+}
+
+.home-stat-card {
+  flex: 150px;
+  background: #f3f4ff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(11, 18, 36, 0.04);
+}
+
+.home-stat-number {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.home-stat-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ====== HOME VIEW LAYOUT + MAP ====== */
 .home-header-row {
   display: flex;
   align-items: baseline;
@@ -407,6 +388,8 @@ select {
   gap: 24px;
 }
 
+.home-column { }
+
 .home-subtitle {
   margin: 0 0 12px;
   font-size: 20px;
@@ -419,7 +402,7 @@ select {
   box-shadow: 0 8px 24px rgba(11, 18, 36, 0.08);
 }
 
-/* Leaflet map */
+/* Leaflet map must fill the box */
 #map {
   width: 100%;
   height: 100%;
@@ -431,9 +414,10 @@ select {
   border-radius: 18px;
   background: #f3f4ff;
   box-shadow: 0 8px 24px rgba(11, 18, 36, 0.04);
+  display: flex;
+  align-items: center;
 }
 
-/* list header */
 .home-list-header {
   display: flex;
   align-items: center;
@@ -443,6 +427,8 @@ select {
 .home-list-count {
   font-size: 40px;
   font-weight: 700;
+  color: #111827;
+  line-height: 1;
 }
 
 .home-list-copy {
@@ -452,8 +438,9 @@ select {
 }
 
 .home-list-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
+  color: #111827;
 }
 
 .home-list-subtitle {
@@ -461,32 +448,7 @@ select {
   color: var(--muted);
 }
 
-/* stats chips under the bar */
-.home-list-stats {
-  margin-top: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-}
-
-.home-list-stat {
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: #eef2ff;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #4b5563;
-}
-
-.home-list-stat-value {
-  font-weight: 600;
-  font-size: 16px;
-  color: #111827;
-}
-
-/* Responsive home */
+/* Responsive */
 @media (max-width: 900px) {
   .home-layout {
     grid-template-columns: 1fr;
@@ -506,7 +468,6 @@ select {
   box-shadow: var(--card-shadow);
 }
 
-/* Top header with avatar, info, and log out */
 .profile-header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -534,7 +495,7 @@ select {
 
 .profile-title {
   margin: 0 0 8px;
-  font-size: 40px;
+  font-size: 20px;
 }
 
 .profile-edit-link {
@@ -553,7 +514,7 @@ select {
 
 .profile-name {
   margin: 0;
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .profile-rating-pill {
@@ -567,13 +528,13 @@ select {
 }
 
 .profile-rating-icon {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .profile-tagline {
   margin: 0;
   margin-top: 4px;
-  font-size: 18px;
+  font-size: 16px;
   color: #6b7280;
 }
 
@@ -584,7 +545,6 @@ select {
   cursor: pointer;
 }
 
-/* STATS + GENRES row */
 .profile-main-row {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
@@ -600,7 +560,7 @@ select {
 .profile-stat-line {
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 16px;
 }
 
@@ -623,7 +583,7 @@ select {
   align-items: center;
   column-gap: 16px;
   margin-bottom: 24px;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .profile-genre-label {
@@ -646,7 +606,7 @@ select {
   font-size: 16px;
 }
 
-/* Responsive tweaks for profile */
+/* Responsive profile */
 @media (max-width: 900px) {
   .profile-header {
     grid-template-columns: 1fr;
@@ -665,7 +625,6 @@ select {
 
 /* ========== FIND JOBS VIEW ========== */
 
-/* Job results grid (right side) */
 #job-search {
   flex: 1;
   display: grid;
@@ -673,12 +632,10 @@ select {
   gap: 24px;
 }
 
-/* Make the job-tile cards fill the grid nicely in Find Jobs */
 #job-search .job-tile {
   width: 100%;
 }
 
-/* Job search panel */
 .job-panel {
   background: white;
   border-radius: 30px;
@@ -688,14 +645,12 @@ select {
   max-width: 1200px;
 }
 
-/* Layout: filters sidebar (left) + results (right) */
 .layout {
   display: flex;
   gap: 28px;
   align-items: flex-start;
 }
 
-/* Filters column pinned to the left */
 .filters-panel {
   width: 260px;
   padding: 20px;
@@ -715,7 +670,6 @@ select {
   margin-bottom: 12px;
 }
 
-/* Job type checkboxes block */
 .job-type-filter div {
   display: flex;
   align-items: center;
@@ -731,13 +685,11 @@ select {
   margin-top: 10px;
 }
 
-/* Limit checkbox width so they don't stretch */
 input[type="checkbox"] {
   width: auto;
   margin: 0;
 }
 
-/* legacy .job-card style (kept) */
 .job-card {
   background: #ede9ff;
   color: black;
@@ -753,7 +705,19 @@ input[type="checkbox"] {
   border-color: var(--accent-blue);
 }
 
-/* Responsive Find Jobs */
+.request-btn {
+  padding: 8px 40px;
+  background-color: #3b5bdb;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.request-btn:hover {
+  background: #24cac7;
+}
+
 @media (max-width: 740px) {
   .layout {
     flex-direction: column;
@@ -766,4 +730,35 @@ input[type="checkbox"] {
   #job-search {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========== LOCATION AUTOCOMPLETE (Post view) ========== */
+
+.location-field {
+  position: relative;
+}
+
+.location-suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(11, 18, 36, 0.12);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.location-suggestion-option {
+  padding: 8px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.location-suggestion-option:hover {
+  background: #f3f4ff;
 }
