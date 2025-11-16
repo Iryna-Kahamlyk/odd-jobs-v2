@@ -229,18 +229,11 @@
       if (profileTutoringBar) profileTutoringBar.style.width = tutoringPct + '%';
     }
 
-    // unified save: persist + refresh profile stats
-function saveJobs() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
-  refreshProfileStats();
-
-  // ALSO update "X tasks active near you" on the Home view
-  if (statOpenCount) {
-    const openJobs = jobs.filter(j => j.status === 'open');
-    statOpenCount.textContent = openJobs.length;
-  }
-}
-
+    // unified save
+    function saveJobs() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+      refreshProfileStats();
+    }
 
     // Ensure job shape (migrate older saved data)
     function ensureJobShape(job) {
@@ -830,7 +823,6 @@ function saveJobs() {
         rowTop.className = 'row-top';
         const imgDiv = document.createElement('div');
         imgDiv.className = 'img';
-        imgDiv.textContent = 'image';
         const content = document.createElement('div');
         content.className = 'content';
         const title = document.createElement('div');
@@ -849,18 +841,18 @@ function saveJobs() {
             : '';
         }
 
-        if (jobFilter && jobFilter.value === 'others') {
-          const badge = document.createElement('span');
-          badge.style.display = 'inline-block';
-          badge.style.padding = '6px 8px';
-          badge.style.marginRight = '10px';
-          badge.style.background = '#222';
-          badge.style.color = 'white';
-          badge.style.borderRadius = '6px';
-          badge.style.fontSize = '12px';
-          badge.textContent = 'Chat';
-          content.appendChild(badge);
-        }
+        //if (jobFilter && jobFilter.value === 'others') {
+         // const badge = document.createElement('span');
+         // badge.style.display = 'inline-block';
+         // badge.style.padding = '6px 8px';
+         // badge.style.marginRight = '10px';
+         // badge.style.background = '#222';
+         // badge.style.color = 'white';
+         // badge.style.borderRadius = '6px';
+         // badge.style.fontSize = '12px';
+         // badge.textContent = 'Chat';
+         // content.appendChild(badge);
+        //}
 
         const desc = document.createElement('div');
         desc.className = 'desc';

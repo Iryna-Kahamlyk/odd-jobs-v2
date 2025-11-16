@@ -28,7 +28,7 @@
 
       <!-- Nav menu -->
       <ul class="menu">
-        <li id="navHome">Home</li>
+        <li id="navHome" class="active">Home</li>
         <li id="navFind">Find jobs</li>
         <li id="navPost">Post a job</li>
         <li id="navOrders">Job orders</li>
@@ -52,21 +52,23 @@
           <div class="home-column">
             <h3 class="home-subtitle">Map View</h3>
             <div class="home-map-box">
-              <!-- Leaflet map lives here -->
               <div id="map"></div>
             </div>
           </div>
 
-          <!-- Right: List -->
+          <!-- Right: List summary -->
           <div class="home-column">
             <h3 class="home-subtitle">List View</h3>
             <div class="home-list-box">
-              <div class="home-column">
-                <h3 class="home-subtitle">List View</h3>
+              <div class="home-list-header">
+                <div class="home-list-count" id="statOpenCount">0</div>
+                <div class="home-list-copy">
+                  <div class="home-list-title">tasks active near you</div>
+                  <div class="home-list-subtitle">
+                    See details and accept them in the <strong>Find jobs</strong> tab.
+                  </div>
+                </div>
               </div>
-              <p class="home-list-empty">
-                <span id="statOpenCount">0</span> tasks active near you
-              </p>
             </div>
           </div>
         </div>
@@ -107,7 +109,7 @@
               </div>
             </div>
 
-            <label>Max Price: $<span id="price-value">10000</span></label>
+            <label>Max Price: $<span id="price-value">1000</span></label>
             <input type="range" id="price-range" min="0" max="1000" value="1000">
 
             <label>Max Range: <span id="distance-value">100km</span></label>
@@ -135,7 +137,7 @@
             <label for="jobPrice">Price ($)</label>
             <input id="jobPrice" type="number" min="0" step="0.01" placeholder="e.g. 12" required>
 
-            <!-- Location field with autocomplete dropdown -->
+            <!-- Location with autocomplete -->
             <div class="location-field">
               <label for="jobLocation">Location</label>
               <input id="jobLocation" type="text" placeholder="Address or short description" required>
@@ -169,7 +171,6 @@
     <!-- JOB ORDERS VIEW -->
     <section id="ordersView" class="view hidden">
       <div class="panel">
-        <!-- Orders header: title + dropdown -->
         <div class="orders-header">
           <h2 class="orders-title">Job orders</h2>
 
@@ -191,15 +192,11 @@
     <!-- PROFILE VIEW -->
     <section id="profileView" class="view hidden">
       <div class="panel profile-page">
-
-        <!-- TOP HEADER ROW -->
         <header class="profile-header">
-          <!-- Avatar -->
           <div class="profile-photo-wrap">
             <img src="ducks.png" alt="Profile photo" class="profile-photo">
           </div>
 
-          <!-- Main info -->
           <div class="profile-header-main">
             <h1 class="profile-title">Profile</h1>
 
@@ -218,13 +215,10 @@
             </p>
           </div>
 
-          <!-- Logout -->
           <button class="profile-logout-btn" id="logoutBtn">Log out</button>
         </header>
 
-        <!-- STATS + GENRES ROW -->
         <section class="profile-main-row">
-          <!-- Left: Statistics -->
           <div class="profile-stats">
             <h3 class="profile-section-title">Statistics</h3>
 
@@ -239,7 +233,6 @@
             </div>
           </div>
 
-          <!-- Right: Genre Distribution -->
           <div class="profile-genres">
             <h3 class="profile-section-title">Genre Distribution</h3>
 

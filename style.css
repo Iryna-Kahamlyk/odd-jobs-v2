@@ -35,7 +35,6 @@ body {
   box-shadow: 0 6px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* From view jobs: generic container + logo for nav */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -53,7 +52,6 @@ body {
   transform: translateY(-50%);
 }
 
-/* Old nav-inner (kept in case you still use it anywhere) */
 .topnav .nav-inner {
   max-width: 1180px;
   margin: 0 auto;
@@ -61,7 +59,7 @@ body {
   justify-content: center;
 }
 
-/* Menu (merged) */
+/* Menu */
 .menu {
   list-style: none;
   display: flex;
@@ -360,6 +358,7 @@ select {
   font-size: 13px;
   color: var(--muted);
 }
+
 /* ====== HOME VIEW LAYOUT + MAP ====== */
 .home-header-row {
   display: flex;
@@ -389,7 +388,7 @@ select {
   gap: 24px;
 }
 
-.home-column {}
+.home-column { }
 
 .home-subtitle {
   margin: 0 0 12px;
@@ -411,16 +410,70 @@ select {
 
 .home-list-box {
   min-height: 200px;
-  padding: 16px;
+  padding: 20px 24px;
   border-radius: 18px;
   background: #f3f4ff;
   box-shadow: 0 8px 24px rgba(11, 18, 36, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  row-gap: 16px;
 }
 
-.home-list-empty {
-  margin: 0;
+.home-list-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.home-list-count {
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.home-list-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.home-list-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.home-list-subtitle {
+  font-size: 13px;
   color: var(--muted);
+}
+
+/* NEW: stats row under the main count */
+.home-list-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 4px;
+}
+
+.home-list-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   font-size: 14px;
+  color: var(--muted);
+}
+
+.home-list-stat-label {
+  font-weight: 500;
+}
+
+.home-list-stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
 }
 
 /* Responsive */
@@ -443,7 +496,6 @@ select {
   box-shadow: var(--card-shadow);
 }
 
-/* Top header with avatar, info, and log out */
 .profile-header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -464,7 +516,6 @@ select {
   object-fit: cover;
 }
 
-/* Left text block */
 .profile-header-main {
   display: flex;
   flex-direction: column;
@@ -494,7 +545,6 @@ select {
   font-size: 40px;
 }
 
-/* Rating pill */
 .profile-rating-pill {
   display: inline-flex;
   align-items: center;
@@ -516,7 +566,6 @@ select {
   color: #6b7280;
 }
 
-/* Logout button on right */
 .profile-logout-btn {
   border: none;
   background: transparent;
@@ -524,7 +573,6 @@ select {
   cursor: pointer;
 }
 
-/* STATS + GENRES row */
 .profile-main-row {
   display: grid;
   grid-template-columns: 260px minmax(0, 1fr);
@@ -532,7 +580,6 @@ select {
   margin-top: 48px;
 }
 
-/* Left column: Statistics */
 .profile-stats .profile-section-title {
   margin: 0 0 24px;
   font-size: 40px;
@@ -553,7 +600,6 @@ select {
   font-weight: 600;
 }
 
-/* Right column: Genre Distribution */
 .profile-genres .profile-section-title {
   margin: 0 0 24px;
   font-size: 28px;
@@ -588,7 +634,7 @@ select {
   font-size: 16px;
 }
 
-/* Responsive tweaks for profile */
+/* Responsive profile */
 @media (max-width: 900px) {
   .profile-header {
     grid-template-columns: 1fr;
@@ -605,9 +651,8 @@ select {
   }
 }
 
-/* ========== FIND JOBS VIEW (from view jobs styles.css) ========== */
+/* ========== FIND JOBS VIEW ========== */
 
-/* Job results grid (right side) */
 #job-search {
   flex: 1;
   display: grid;
@@ -615,12 +660,10 @@ select {
   gap: 24px;
 }
 
-/* Make the job-tile cards fill the grid nicely in Find Jobs */
 #job-search .job-tile {
   width: 100%;
 }
 
-/* Job search panel */
 .job-panel {
   background: white;
   border-radius: 30px;
@@ -630,14 +673,12 @@ select {
   max-width: 1200px;
 }
 
-/* Layout: filters sidebar (left) + results (right) */
 .layout {
   display: flex;
   gap: 28px;
   align-items: flex-start;
 }
 
-/* Filters column pinned to the left */
 .filters-panel {
   width: 260px;
   padding: 20px;
@@ -645,7 +686,7 @@ select {
   border-radius: 16px;
   box-shadow: var(--card-shadow);
   text-align: left;
-  margin: 0;           /* was 0 auto – centres it; now flush to left */
+  margin: 0;
 }
 
 .filters-panel h2 {
@@ -657,7 +698,6 @@ select {
   margin-bottom: 12px;
 }
 
-/* Job type checkboxes block */
 .job-type-filter div {
   display: flex;
   align-items: center;
@@ -673,13 +713,11 @@ select {
   margin-top: 10px;
 }
 
-/* Limit checkbox width so they don't stretch */
 input[type="checkbox"] {
   width: auto;
   margin: 0;
 }
 
-/* We no longer use .job-card visually, but keep it soft just in case */
 .job-card {
   background: #ede9ff;
   color: black;
@@ -695,7 +733,6 @@ input[type="checkbox"] {
   border-color: var(--accent-blue);
 }
 
-/* Request button */
 .request-btn {
   padding: 8px 40px;
   background-color: #3b5bdb;
@@ -709,7 +746,6 @@ input[type="checkbox"] {
   background: #24cac7;
 }
 
-/* Responsive tweaks */
 @media (max-width: 740px) {
   .layout {
     flex-direction: column;
@@ -723,12 +759,13 @@ input[type="checkbox"] {
     grid-template-columns: 1fr;
   }
 }
-/* Location autocomplete wrapper */
+
+/* ========== LOCATION AUTOCOMPLETE (Post view) ========== */
+
 .location-field {
   position: relative;
 }
 
-/* Dropdown under the Location input */
 .location-suggestions {
   position: absolute;
   left: 0;
@@ -744,7 +781,6 @@ input[type="checkbox"] {
   z-index: 1000;
 }
 
-/* Individual suggestion rows */
 .location-suggestion-option {
   padding: 8px 10px;
   font-size: 14px;
