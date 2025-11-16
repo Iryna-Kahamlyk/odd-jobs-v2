@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Odd Jobs — Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+    <nav class="topnav">
+        <div class="nav-inner">
+            <ul class="menu">
+                <li id="navHome">Home</li>
+                <li id="navFind">Find jobs</li>
+                <li id="navPost">Post a job</li>
+                <li id="navOrders">Job orders</li>
+                <li id="navProfile">Profile</li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="page">
+
+        <section id="homeView" class="view">
+            <div class="panel home-panel">
+              <div class="home-header-row">
+                <h2 class="home-title">Nearby Tasks</h2>
+                <p class="home-greeting">Hey, <span>Alex!</span></p>
+              </div>
+      
+              <div class="home-layout">
+                <!-- Left: Map -->
+                <div class="home-column">
+                  <h3 class="home-subtitle">Map View</h3>
+                  <!-- Just a blank map box for now -->
+                  <div class="home-map-box"></div>
+                </div>
+      
+                <!-- Right: List -->
+                <div class="home-column">
+                  <h3 class="home-subtitle">List View</h3>
+                  <div class="home-list-box">
+                    <div class="home-list-pill"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        <!-- Find jobs view -->
+        <section id="findView" class="view">
+            <div class="panel">
+                <h2>Find jobs</h2>
+                <div id="findGrid" class="job-grid"></div>
+            </div>
+        </section>
+
+        <!-- Post job view (two-column: post form + active listings) -->
+        <section id="postView" class="view hidden">
+            <div class="panel post-panel">
+                <div class="post-left">
+                    <h2>Post a job</h2>
+                    <form id="jobForm" novalidate>
+                        <label for="jobTitle">Title</label>
+                        <input id="jobTitle" type="text" placeholder="e.g. Buy groceries" required>
+
+                        <label for="jobDescription">Description</label>
+                        <textarea id="jobDescription" rows="3" placeholder="Details about the task" required></textarea>
+
+                        <label for="jobPrice">Price ($)</label>
+                        <input id="jobPrice" type="number" min="0" step="0.01" placeholder="e.g. 12" required>
+
+                        <label for="jobLocation">Location</label>
+                        <input id="jobLocation" type="text" placeholder="Address or short description" required>
+
+                        <label for="jobCategory">Category</label>
+                        <select id="jobCategory" required>
+                            <option value="">Select category</option>
+                            <option value="groceries">Groceries</option>
+                            <option value="educational">Educational</option>
+                            <option value="chores">Chores</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <div class="row">
+                            <button type="submit" class="btn">Post Job</button>
+                            <button type="button" id="postCancel" class="btn ghost">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="post-right">
+                    <h3>Active listings</h3>
+                    <div id="activeListings" class="active-listings"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Job orders view -->
+        <section id="ordersView" class="view hidden">
+            <div class="panel">
+                <!-- Updated orders header: title + dropdown aligned on a single line -->
+                <div class="orders-header">
+                    <h2 class="orders-title">Job orders</h2>
+
+                    <select id="jobFilter" class="orders-select">
+                        <option value="others">For others</option>
+                        <option value="you">For you</option>
+                    </select>
+                </div>
+
+
+                <div class="orders-tabs">
+                    <button id="ongoingTab" class="tab active">Ongoing</button>
+                    <button id="previousTab" class="tab">Previous</button>
+                </div>
+
+                <div id="jobGrid" class="job-grid"></div>
+            </div>
+        </section>
+
+        <section id="profileView" class="view hidden">
+            <div class="panel profile-page">
+        
+            <!-- TOP HEADER ROW -->
+            <header class="profile-header">
+              <!-- Avatar -->
+              <div class="profile-photo-wrap">
+                <!-- keep whatever duck image filename you’re already using -->
+                <img src="ducks.png" alt="Profile photo" class="profile-photo">
+              </div>
+        
+              <!-- Main info -->
+              <div class="profile-header-main">
+                <h1 class="profile-title">Profile</h1>
+        
+                <a href="#" class="profile-edit-link">Edit profile</a>
+        
+                <div class="profile-name-row">
+                  <h2 class="profile-name">Alex Jones</h2>
+                  <div class="profile-rating-pill">
+                    <span class="profile-rating-icon">★</span>
+                    <span class="profile-rating-value">4.98</span>
+                  </div>
+                </div>
+        
+                <p class="profile-tagline">
+                  Software student at UBC, available for evening tasks
+                </p>
+              </div>
+        
+              <!-- Logout on the far right -->
+              <button class="profile-logout-btn">Log out</button>
+            </header>
+        
+            <!-- STATS + GENRES ROW -->
+            <section class="profile-main-row">
+              <!-- Left: Statistics -->
+              <div class="profile-stats">
+                <h3 class="profile-section-title">Statistics</h3>
+        
+                <div class="profile-stat-line">
+                  <span class="profile-stat-label">Jobs done:</span>
+                  <span class="profile-stat-number">4</span>
+                </div>
+        
+                <div class="profile-stat-line">
+                  <span class="profile-stat-label">Jobs posted:</span>
+                  <span class="profile-stat-number">2</span>
+                </div>
+              </div>
+        
+              <!-- Right: Genre Distribution -->
+              <div class="profile-genres">
+                <h3 class="profile-section-title">Genre Distribution</h3>
+        
+                <div class="profile-genre-row">
+                  <div class="profile-genre-label">Physical Labour</div>
+                  <div class="profile-genre-bar">
+                    <div class="profile-genre-fill" style="width: 90%;"></div>
+                  </div>
+                  <div class="profile-genre-percent">90%</div>
+                </div>
+        
+                <div class="profile-genre-row">
+                  <div class="profile-genre-label">Tutoring</div>
+                  <div class="profile-genre-bar">
+                    <div class="profile-genre-fill" style="width: 10%;"></div>
+                  </div>
+                  <div class="profile-genre-percent">10%</div>
+                </div>
+              </div>
+            </section>
+        
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

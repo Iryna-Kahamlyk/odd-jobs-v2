@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Local Odd Jobs Login</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="login-page styles.css" />
+</head>
+<body>
+  <!-- The big container of login/signup -->
+  <div class="authentication-section">
+      <h1 class="auth-header">Log in to Local Odd Jobs</h1>
+      <p class="auth-subtitle">
+          Log in or create an account to find odd jobs in your local area.
+      </p>
+
+        <!-- Google sign-in button (demo) -->
+        <div class="authentication-row">
+            <button id="signin-button" class="signin-button" type="button">
+                <img src="google logo.png" width="20px" height="20px" alt="Google logo" class="google-logo" />
+                <span class="google-signin-text">Sign in with Google</span>
+            </button>
+        </div>
+
+        <!-- Toggle between Login and Sign Up -->
+        <div class="auth-toggle-row">
+          <button id="login-tab-btn" class="auth-toggle-btn active" type="button">
+            Log in
+          </button>
+          <button id="signup-tab-btn" class="auth-toggle-btn" type="button">
+            Create account
+          </button>
+        </div>
+
+        <!-- Login form -->
+        <form id="login-form">
+          <label for="login-username">Email</label>
+          <input id="login-username" type="text" placeholder="email@example.com" required>
+
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" required>
+
+          <button class="submit-btn" type="submit">Log in</button>
+          <div id="login-error" class="auth-error"></div>
+        </form>
+
+        <!-- Sign up form -->
+        <form id="signup-form" class="hidden">
+          <label for="signup-username">Email</label>
+          <input id="signup-username" type="text" placeholder="email@example.com"  required>
+
+          <label for="signup-password">Password</label>
+          <input id="signup-password" type="password" placeholder="min. 4 characters" required>
+
+          <button class="submit-btn" type="submit">Create account</button>
+          <div id="signup-error" class="auth-error"></div>
+        </form>
+
+<script src="login-page script.js" defer></script>
+    </div>
+</body>
+</html>
+
