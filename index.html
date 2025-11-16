@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-   <meta charset="utf-8" />
+  <meta charset="utf-8" />
   <title>Odd Jobs — Demo</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
@@ -26,7 +26,7 @@
           alt="logo" class="logo">
       </a>
 
-      <!-- Nav menu (IDs kept the same for script.js) -->
+      <!-- Nav menu -->
       <ul class="menu">
         <li id="navHome">Home</li>
         <li id="navFind">Find jobs</li>
@@ -57,12 +57,15 @@
             </div>
           </div>
 
-          <!-- Right: List (can fill in later) -->
+          <!-- Right: List -->
           <div class="home-column">
             <h3 class="home-subtitle">List View</h3>
             <div class="home-list-box">
+              <div class="home-column">
+                <h3 class="home-subtitle">List View</h3>
+              </div>
               <p class="home-list-empty">
-                Jobs near you will show here soon.
+                <span id="statOpenCount">0</span> tasks active near you
               </p>
             </div>
           </div>
@@ -70,8 +73,8 @@
       </div>
     </section>
 
-    <!-- FIND JOBS VIEW (merged from "view jobs html") -->
-    <section id="findView" class="view">
+    <!-- FIND JOBS VIEW -->
+    <section id="findView" class="view hidden">
       <div class="panel job-panel">
         <div class="layout">
           <!-- Filters panel -->
@@ -111,7 +114,7 @@
             <input type="range" id="distance-range" min="0" max="100" value="100">
           </div>
 
-          <!-- Job cards will go here -->
+          <!-- Job cards -->
           <div id="job-search"></div>
         </div>
       </div>
@@ -132,8 +135,12 @@
             <label for="jobPrice">Price ($)</label>
             <input id="jobPrice" type="number" min="0" step="0.01" placeholder="e.g. 12" required>
 
-            <label for="jobLocation">Location</label>
-            <input id="jobLocation" type="text" placeholder="Address or short description" required>
+            <!-- Location field with autocomplete dropdown -->
+            <div class="location-field">
+              <label for="jobLocation">Location</label>
+              <input id="jobLocation" type="text" placeholder="Address or short description" required>
+              <div id="locationSuggestions" class="location-suggestions hidden"></div>
+            </div>
 
             <label for="jobCategory">Category</label>
             <select id="jobCategory" required>
@@ -141,7 +148,7 @@
               <option value="creative">Creative</option>
               <option value="educational">Educational</option>
               <option value="groceries">Errand</option>
-              <option value="physical">Physical</option>  
+              <option value="physical">Physical</option>
               <option value="other">Tech</option>
             </select>
 
@@ -189,7 +196,6 @@
         <header class="profile-header">
           <!-- Avatar -->
           <div class="profile-photo-wrap">
-            <!-- keep whatever duck image filename you’re already using -->
             <img src="ducks.png" alt="Profile photo" class="profile-photo">
           </div>
 
@@ -212,8 +218,8 @@
             </p>
           </div>
 
-          <!-- Logout on the far right -->
-          <button class="profile-logout-btn">Log out</button>
+          <!-- Logout -->
+          <button class="profile-logout-btn" id="logoutBtn">Log out</button>
         </header>
 
         <!-- STATS + GENRES ROW -->
@@ -224,12 +230,12 @@
 
             <div class="profile-stat-line">
               <span class="profile-stat-label">Jobs done:</span>
-              <span class="profile-stat-number">4</span>
+              <span class="profile-stat-number" id="profileJobsDone">4</span>
             </div>
 
             <div class="profile-stat-line">
               <span class="profile-stat-label">Jobs posted:</span>
-              <span class="profile-stat-number">2</span>
+              <span class="profile-stat-number" id="profileJobsPosted">2</span>
             </div>
           </div>
 
@@ -240,17 +246,17 @@
             <div class="profile-genre-row">
               <div class="profile-genre-label">Physical Labour</div>
               <div class="profile-genre-bar">
-                <div class="profile-genre-fill" style="width: 90%;"></div>
+                <div class="profile-genre-fill" id="profilePhysicalBar" style="width: 90%;"></div>
               </div>
-              <div class="profile-genre-percent">90%</div>
+              <div class="profile-genre-percent" id="profilePhysicalPct">90%</div>
             </div>
 
             <div class="profile-genre-row">
               <div class="profile-genre-label">Tutoring</div>
               <div class="profile-genre-bar">
-                <div class="profile-genre-fill" style="width: 10%;"></div>
+                <div class="profile-genre-fill" id="profileTutoringBar" style="width: 10%;"></div>
               </div>
-              <div class="profile-genre-percent">10%</div>
+              <div class="profile-genre-percent" id="profileTutoringPct">10%</div>
             </div>
           </div>
         </section>
@@ -258,9 +264,9 @@
     </section>
 
   </main>
+
   <!-- Leaflet JS for map -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <script src="script.js"></script>
 </body>
 

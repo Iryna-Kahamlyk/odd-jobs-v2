@@ -23,11 +23,13 @@
     const ordersView = document.getElementById('ordersView');
     const profileView = document.getElementById('profileView');
 
-        // --- Map state for Home view ---
+    // --- Map state for Home view ---
     let map = null;
     let userMarker = null;
     let mapInitialized = false;
 
+    // Shared user location for distance calculations (default: UBC)
+    let userLocation = { lat: 49.2606, lng: -123.2460 };
 
     // optional home stats
     const statOpenCount = document.getElementById('statOpenCount');
@@ -53,6 +55,11 @@
     const catEl = document.getElementById('jobCategory');
     const postCancel = document.getElementById('postCancel');
 
+    // Location autocomplete UI
+    const locationSuggestions = document.getElementById('locationSuggestions');
+    let selectedLocationCoords = null;
+    let locationDebounceTimer = null;
+
     // --- Find Jobs (filters UI) DOM refs ---
     const jobSearchEl = document.getElementById('job-search');
     const searchBar = document.getElementById('search-bar');
@@ -60,12 +67,11 @@
     const priceValue = document.getElementById('price-value');
     const distanceRange = document.getElementById('distance-range');
     const distanceValue = document.getElementById('distance-value');
-    const userLocation = { lat: 49, lng: -120 }; // demo location
 
-    // order controls: support both naming schemes: jobFilter / ordersScope
+    // order controls
     const jobFilter =
       document.getElementById('jobFilter') ||
-      document.getElementById('ordersScope'); // dropdown
+      document.getElementById('ordersScope');
 
     const ongoingTab =
       document.getElementById('ongoingTab') ||
@@ -75,7 +81,6 @@
       document.getElementById('previousTab') ||
       document.getElementById('tabAccepted');
 
-    // older code used tabOngoing/tabAccepted; map them:
     const tabOngoing =
       document.getElementById('tabOngoing') ||
       document.getElementById('ongoingTab');
@@ -108,6 +113,7 @@
           return 'Educational';
         case 'groceries':
           return 'Errand';
+        case 'physical':
         case 'chores':
           return 'Physical';
         case 'tech':
@@ -115,6 +121,84 @@
         default:
           return 'Creative';
       }
+    }
+
+    // --- Map + geolocation ---
+    function initMap() {
+      if (mapInitialized) return;
+      const mapEl = document.getElementById('map');
+      if (!mapEl || !window.L) return;
+
+      const defaultCenter = [userLocation.lat, userLocation.lng];
+
+      map = L.map('map').setView(defaultCenter, 14);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      userMarker = L.marker(defaultCenter).addTo(map)
+        .bindPopup('You are here').openPopup();
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            userLocation.lat = latitude;
+            userLocation.lng = longitude;
+            const coords = [latitude, longitude];
+
+            map.setView(coords, 15);
+            if (userMarker) {
+              map.removeLayer(userMarker);
+            }
+            userMarker = L.marker(coords).addTo(map)
+              .bindPopup('You are here').openPopup();
+
+            // After we know real user location, re-run distance filters
+            if (activeView === 'find') {
+              renderFindGrid();
+            }
+          },
+          (err) => {
+            console.warn('Geolocation error:', err);
+          }
+        );
+      }
+
+      mapInitialized = true;
+    }
+
+    // distance helper (Haversine)
+    function getDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLng / 2) ** 2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function distanceLabelForJob(job) {
+      if (!job.location || typeof job.location !== 'object') return '';
+      if (!('lat' in job.location) || !('lng' in job.location)) return '';
+      const dist = getDistance(
+        userLocation.lat,
+        userLocation.lng,
+        job.location.lat,
+        job.location.lng
+      );
+      if (!isFinite(dist)) return '';
+      if (dist < 1) {
+        const m = Math.round(dist * 1000);
+        return `${m} m away`;
+      }
+      return `${dist.toFixed(1)} km away`;
     }
 
     // PROFILE STATS
@@ -131,7 +215,7 @@
       for (const j of jobs) {
         if (!j.category) continue;
         if (j.category === 'educational') tutoringCount++;
-        else if (['groceries', 'chores', 'other'].includes(j.category)) physicalCount++;
+        else if (['groceries', 'chores', 'other', 'physical'].includes(j.category)) physicalCount++;
       }
       const totalGenre = physicalCount + tutoringCount;
       let physicalPct = 0, tutoringPct = 0;
@@ -146,10 +230,17 @@
     }
 
     // unified save: persist + refresh profile stats
-    function saveJobs() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
-      refreshProfileStats();
-    }
+function saveJobs() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(jobs));
+  refreshProfileStats();
+
+  // ALSO update "X tasks active near you" on the Home view
+  if (statOpenCount) {
+    const openJobs = jobs.filter(j => j.status === 'open');
+    statOpenCount.textContent = openJobs.length;
+  }
+}
+
 
     // Ensure job shape (migrate older saved data)
     function ensureJobShape(job) {
@@ -157,7 +248,6 @@
       job.claimer = job.claimer || null;
       job.status = job.status || 'open';
       job.postedBy = job.postedBy || 'other';
-      // ensure a human-readable type for filters
       if (!job.type) {
         job.type = mapCategoryToType(job.category);
       }
@@ -167,13 +257,17 @@
     // seed demo data if empty
     function seedDemoIfNeeded() {
       if (jobs && jobs.length) return;
+
+      const baseLat = 49.2606;
+      const baseLng = -123.2460;
       const now = Date.now();
+
       const demo = [
         {
           title: 'Cat sitter',
           description: 'Look after my cat for the evening',
           price: 15,
-          location: 'Home',
+          location: { label: 'UBC residence', lat: baseLat + 0.002, lng: baseLng + 0.001 },
           category: 'chores',
           created: now - 1000 * 60 * 60 * 24 * 5
         },
@@ -181,7 +275,7 @@
           title: 'Bring boxes to car',
           description: 'Move boxes from HA to Nest parking',
           price: 5,
-          location: 'HA',
+          location: { label: 'Student housing', lat: baseLat + 0.004, lng: baseLng + 0.002 },
           category: 'chores',
           created: now - 1000 * 60 * 60 * 24 * 4
         },
@@ -189,7 +283,7 @@
           title: 'Formatting citations',
           description: 'Teach me to format APA',
           price: 12,
-          location: 'Library',
+          location: { label: 'Koerner Library', lat: baseLat - 0.001, lng: baseLng + 0.003 },
           category: 'educational',
           created: now - 1000 * 60 * 60 * 24 * 3
         },
@@ -197,7 +291,7 @@
           title: 'Setup printer',
           description: 'Help me set up my new printer',
           price: 8,
-          location: 'Home',
+          location: { label: 'Marine Drive', lat: baseLat - 0.003, lng: baseLng - 0.002 },
           category: 'chores',
           created: now - 1000 * 60 * 60 * 24 * 2
         },
@@ -205,7 +299,7 @@
           title: 'Grocery run',
           description: 'Buy milk & eggs',
           price: 10,
-          location: 'Local store',
+          location: { label: 'Local store', lat: baseLat + 0.006, lng: baseLng - 0.001 },
           category: 'groceries',
           created: now - 1000 * 60 * 60 * 12
         },
@@ -213,19 +307,20 @@
           title: 'Math tutoring',
           description: '1 hour calculus help',
           price: 20,
-          location: 'Cafe',
+          location: { label: 'Campus cafe', lat: baseLat + 0.001, lng: baseLng - 0.003 },
           category: 'educational',
           created: now - 1000 * 60 * 60 * 6
         }
       ];
+
       jobs = demo.map(j => ensureJobShape({
         id: id(),
         title: j.title,
         description: j.description,
         price: j.price || 0,
-        location: j.location || '',
+        location: j.location,
         category: j.category || 'other',
-        status: 'open',            // make them show up in Find Jobs
+        status: 'open',
         applicants: [],
         claimer: null,
         created: j.created || Date.now(),
@@ -234,72 +329,13 @@
       saveJobs();
     }
 
-    // initialize job shapes & demo seed
+    // init jobs
     seedDemoIfNeeded();
     jobs = jobs.map(ensureJobShape);
-    refreshProfileStats(); // initial
-
-        // Initialize Leaflet map on Home view
-    function initMap() {
-      if (mapInitialized) return;
-      const mapEl = document.getElementById('map');
-      if (!mapEl || !window.L) return; // Leaflet not loaded
-
-      // Default center: UBC
-      const defaultCenter = [49.2606, -123.2460];
-
-      map = L.map('map').setView(defaultCenter, 14);
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
-      // Fallback marker (UBC) until we get real location
-      userMarker = L.marker(defaultCenter).addTo(map)
-        .bindPopup('Default location (UBC)').openPopup();
-
-      // Try browser geolocation for real user location
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const { latitude, longitude } = pos.coords;
-            const coords = [latitude, longitude];
-
-            map.setView(coords, 15);
-            if (userMarker) {
-              map.removeLayer(userMarker);
-            }
-            userMarker = L.marker(coords).addTo(map)
-              .bindPopup('You are here').openPopup();
-          },
-          (err) => {
-            console.warn('Geolocation error:', err);
-            // keep default UBC view
-          }
-        );
-      }
-
-      mapInitialized = true;
-    }
-
-
-    // --- distance helper for filters ---
-    function getDistance(lat1, lng1, lat2, lng2) {
-      const R = 6371; // km
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLng = (lng2 - lng1) * Math.PI / 180;
-      const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(lat1 * Math.PI / 180) *
-        Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLng / 2) ** 2;
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return R * c;
-    }
+    refreshProfileStats();
 
     // --- View switching ---
-        function showView(view) {
+    function showView(view) {
       activeView = view;
       if (homeView) homeView.classList.toggle('hidden', view !== 'home');
       if (findView) findView.classList.toggle('hidden', view !== 'find');
@@ -320,14 +356,13 @@
       if (view === 'profile') refreshProfileStats();
     }
 
-    // wire nav (guarded)
+    // wire nav
     if (navHome) navHome.addEventListener('click', () => showView('home'));
     if (navFind) navFind.addEventListener('click', () => showView('find'));
     if (navPost) navPost.addEventListener('click', () => showView('post'));
     if (navOrders) navOrders.addEventListener('click', () => showView('orders'));
     if (navProfile) navProfile.addEventListener('click', () => showView('profile'));
 
-    // optional logout (guard)
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
         localStorage.removeItem(USER_KEY);
@@ -337,8 +372,76 @@
       });
     }
 
-    // default landing view
+    // default landing
     showView('home');
+
+    // --- Location autocomplete (Nominatim) ---
+    function fetchLocationSuggestions(query) {
+      if (!locationSuggestions) return;
+
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        query
+      )}&addressdetails=1&limit=5`;
+
+      fetch(url, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          locationSuggestions.innerHTML = '';
+          if (!Array.isArray(data) || !data.length) {
+            locationSuggestions.classList.add('hidden');
+            return;
+          }
+
+          data.forEach(item => {
+            const opt = document.createElement('div');
+            opt.className = 'location-suggestion-option';
+            const label = item.display_name;
+            opt.textContent = label;
+            opt.addEventListener('click', () => {
+              if (locEl) locEl.value = label;
+              selectedLocationCoords = {
+                lat: parseFloat(item.lat),
+                lng: parseFloat(item.lon)
+              };
+              locationSuggestions.classList.add('hidden');
+            });
+            locationSuggestions.appendChild(opt);
+          });
+
+          locationSuggestions.classList.remove('hidden');
+        })
+        .catch(err => {
+          console.error('Location search error', err);
+        });
+    }
+
+    if (locEl && locationSuggestions) {
+      locEl.addEventListener('input', () => {
+        selectedLocationCoords = null;
+        const q = locEl.value.trim();
+        if (locationDebounceTimer) clearTimeout(locationDebounceTimer);
+
+        if (q.length < 3) {
+          locationSuggestions.classList.add('hidden');
+          return;
+        }
+
+        locationDebounceTimer = setTimeout(() => {
+          fetchLocationSuggestions(q);
+        }, 400);
+      });
+
+      // hide suggestions when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!locationSuggestions) return;
+        if (e.target === locEl || locationSuggestions.contains(e.target)) return;
+        locationSuggestions.classList.add('hidden');
+      });
+    }
 
     // --- Posting jobs ---
     if (jobForm) {
@@ -348,22 +451,34 @@
           title: titleEl.value.trim(),
           description: descEl.value.trim(),
           price: priceEl.value.trim(),
-          location: locEl.value.trim(),
+          locationText: locEl.value.trim(),
           category: catEl.value
         };
-        if (!payload.title || !payload.description || !payload.price || !payload.location || !payload.category) {
+        if (!payload.title || !payload.description || !payload.price || !payload.locationText || !payload.category) {
           alert('Please fill all fields (including category).');
           return;
         }
         const p = Number(payload.price);
         if (Number.isNaN(p) || p < 0) { alert('Enter a valid price'); return; }
-        payload.price = p;
+
+        let locationValue;
+        if (selectedLocationCoords) {
+          locationValue = {
+            label: payload.locationText,
+            lat: selectedLocationCoords.lat,
+            lng: selectedLocationCoords.lng
+          };
+        } else {
+          // fallback: text only
+          locationValue = payload.locationText;
+        }
+
         const job = ensureJobShape({
           id: id(),
           title: payload.title,
           description: payload.description,
-          price: payload.price,
-          location: payload.location,
+          price: p,
+          location: locationValue,
           category: payload.category,
           status: 'open',
           applicants: [],
@@ -371,10 +486,12 @@
           created: Date.now(),
           postedBy: 'me'
         });
+
         jobs.push(job);
         saveJobs();
         jobForm.reset();
         if (catEl) catEl.value = '';
+        selectedLocationCoords = null;
         showView('find');
         renderFindGrid();
       });
@@ -384,11 +501,12 @@
       postCancel.addEventListener('click', () => {
         if (jobForm) jobForm.reset();
         if (catEl) catEl.value = '';
+        selectedLocationCoords = null;
         showView('find');
       });
     }
 
-    // --- Find Jobs: render cards into #job-search with filters ---
+    // --- Find Jobs: render cards ---
     function renderJobsList(jobsArray) {
       if (!jobSearchEl) return;
       jobSearchEl.innerHTML = '';
@@ -399,7 +517,6 @@
       }
 
       jobsArray.forEach(job => {
-        // Reuse the pretty job-order card style (job-tile) WITHOUT image/chat
         const tile = document.createElement('div');
         tile.className = 'job-tile ongoing';
 
@@ -416,7 +533,13 @@
         const subtitle = document.createElement('div');
         subtitle.className = 'subtitle';
         const typeLabel = job.type || mapCategoryToType(job.category);
-        subtitle.textContent = `${typeLabel} • $${Number(job.price).toFixed(2)}`;
+
+        let subtitleText = `${typeLabel} • $${Number(job.price).toFixed(2)}`;
+        const dLabel = distanceLabelForJob(job);
+        if (dLabel) {
+          subtitleText += ` • ${dLabel}`;
+        }
+        subtitle.textContent = subtitleText;
 
         const desc = document.createElement('div');
         desc.className = 'desc';
@@ -496,7 +619,6 @@
     }
 
     function renderFindGrid() {
-      // simply delegate to filterJobs
       filterJobs();
     }
 
@@ -522,7 +644,7 @@
       cb.addEventListener('change', filterJobs);
     });
 
-    // --- Apply to job (used by Find view request button) ---
+    // --- Apply to job ---
     function applyToJob(jobId) {
       const job = jobs.find(j => j.id === jobId);
       if (!job) return alert('Job not found');
@@ -727,7 +849,6 @@
             : '';
         }
 
-        // keep Chat badge only in Orders, not in Find
         if (jobFilter && jobFilter.value === 'others') {
           const badge = document.createElement('span');
           badge.style.display = 'inline-block';
@@ -785,7 +906,6 @@
       }
     }
 
-    // tabs wiring
     const attachTabHandlers = () => {
       if (ongoingTab) {
         ongoingTab.onclick = () => {
@@ -878,5 +998,5 @@
     window._TASKS = jobs;
     window._SAVE = saveJobs;
     window._USER = () => currentUser;
-  } // init
-})(); // end merged script
+  }
+})();
