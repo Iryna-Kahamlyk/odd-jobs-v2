@@ -27,12 +27,15 @@
     let map = null;
     let userMarker = null;
     let mapInitialized = false;
+    let homeStatsInitialized = false;
 
     // Shared user location for distance calculations (default: UBC)
     let userLocation = { lat: 49.2606, lng: -123.2460 };
 
     // optional home stats
     const statOpenCount = document.getElementById('statOpenCount');
+    const statJobsTaken = document.getElementById('statJobsTaken');
+    const statMoneyEarned = document.getElementById('statMoneyEarned');
 
     // profile stats
     const profileJobsDoneEl = document.getElementById('profileJobsDone');
@@ -201,6 +204,23 @@
       return `${dist.toFixed(1)} km away`;
     }
 
+    // --- Home stats (randomized demo values) ---
+    function initHomeStats() {
+      if (homeStatsInitialized) return;
+
+      const jobsTakenRandom = Math.floor(Math.random() * 15) + 3; // 3–17
+      const moneyEarnedRandom = Math.floor(Math.random() * 450) + 50; // $50–$499
+
+      if (statJobsTaken) {
+        statJobsTaken.textContent = jobsTakenRandom.toString();
+      }
+      if (statMoneyEarned) {
+        statMoneyEarned.textContent = '$' + moneyEarnedRandom.toLocaleString();
+      }
+
+      homeStatsInitialized = true;
+    }
+
     // PROFILE STATS
     function refreshProfileStats() {
       if (!profileJobsDoneEl || !profileJobsPostedEl) return;
@@ -342,7 +362,10 @@
       if (navOrders) navOrders.classList.toggle('active', view === 'orders');
       if (navProfile) navProfile.classList.toggle('active', view === 'profile');
 
-      if (view === 'home') initMap();
+      if (view === 'home') {
+        initMap();
+        initHomeStats();
+      }
       if (view === 'orders') renderGrid();
       if (view === 'find') renderFindGrid();
       if (view === 'post') renderActiveListings();
@@ -840,19 +863,6 @@
             ? `Done by ${job.claimer.name}`
             : '';
         }
-
-        //if (jobFilter && jobFilter.value === 'others') {
-         // const badge = document.createElement('span');
-         // badge.style.display = 'inline-block';
-         // badge.style.padding = '6px 8px';
-         // badge.style.marginRight = '10px';
-         // badge.style.background = '#222';
-         // badge.style.color = 'white';
-         // badge.style.borderRadius = '6px';
-         // badge.style.fontSize = '12px';
-         // badge.textContent = 'Chat';
-         // content.appendChild(badge);
-        //}
 
         const desc = document.createElement('div');
         desc.className = 'desc';

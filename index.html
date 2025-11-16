@@ -17,13 +17,26 @@
 </head>
 
 <body>
+  <!-- LOADER OVERLAY -->
+  <div id="loader" class="loader-overlay">
+    <div class="loader-logo-wrap">
+      <img
+        src="https://media.discordapp.net/attachments/1438419533886001233/1439514374753488997/R6a7uAAAAAZJREFUAwDPsYtmIHaE9AAAAABJRU5ErkJggg.png?ex=691acbbb&is=69197a3b&hm=0d5d6b9154a32df8fd61f7aac51e804c8ee45caed2e56a97cc19cd46c7e6c482&=&format=webp&quality=lossless&width=1480&height=1480"
+        alt="Odd Jobs logo"
+        class="loader-logo"
+      />
+    </div>
+  </div>
+
   <nav class="topnav">
     <div class="container">
       <!-- Logo -->
       <a href="#">
         <img
           src="https://media.discordapp.net/attachments/1438419533886001233/1439514374753488997/R6a7uAAAAAZJREFUAwDPsYtmIHaE9AAAAABJRU5ErkJggg.png?ex=691acbbb&is=69197a3b&hm=0d5d6b9154a32df8fd61f7aac51e804c8ee45caed2e56a97cc19cd46c7e6c482&=&format=webp&quality=lossless&width=1480&height=1480"
-          alt="logo" class="logo">
+          alt="logo"
+          class="logo"
+        />
       </a>
 
       <!-- Nav menu -->
@@ -52,11 +65,12 @@
           <div class="home-column">
             <h3 class="home-subtitle">Map View</h3>
             <div class="home-map-box">
+              <!-- Leaflet map -->
               <div id="map"></div>
             </div>
           </div>
 
-          <!-- Right: List summary -->
+          <!-- Right: Summary -->
           <div class="home-column">
             <h3 class="home-subtitle">List View</h3>
             <div class="home-list-box">
@@ -67,6 +81,17 @@
                   <div class="home-list-subtitle">
                     See details and accept them in the <strong>Find jobs</strong> tab.
                   </div>
+                </div>
+              </div>
+
+              <div class="home-list-stats">
+                <div class="home-list-stat">
+                  <span class="home-list-stat-label">Jobs taken</span>
+                  <span class="home-list-stat-value" id="homeJobsDone">0</span>
+                </div>
+                <div class="home-list-stat">
+                  <span class="home-list-stat-label">Money earned</span>
+                  <span class="home-list-stat-value" id="homeMoneyMade">$0</span>
                 </div>
               </div>
             </div>
@@ -137,12 +162,8 @@
             <label for="jobPrice">Price ($)</label>
             <input id="jobPrice" type="number" min="0" step="0.01" placeholder="e.g. 12" required>
 
-            <!-- Location with autocomplete -->
-            <div class="location-field">
-              <label for="jobLocation">Location</label>
-              <input id="jobLocation" type="text" placeholder="Address or short description" required>
-              <div id="locationSuggestions" class="location-suggestions hidden"></div>
-            </div>
+            <label for="jobLocation">Location</label>
+            <input id="jobLocation" type="text" placeholder="Address or short description" required>
 
             <label for="jobCategory">Category</label>
             <select id="jobCategory" required>
@@ -192,15 +213,13 @@
     <!-- PROFILE VIEW -->
     <section id="profileView" class="view hidden">
       <div class="panel profile-page">
+
         <header class="profile-header">
           <div class="profile-photo-wrap">
             <img src="ducks.png" alt="Profile photo" class="profile-photo">
           </div>
 
           <div class="profile-header-main">
-            <h1 class="profile-title">Profile</h1>
-
-            <a href="#" class="profile-edit-link">Edit profile</a>
 
             <div class="profile-name-row">
               <h2 class="profile-name">Alex Jones</h2>
@@ -224,12 +243,12 @@
 
             <div class="profile-stat-line">
               <span class="profile-stat-label">Jobs done:</span>
-              <span class="profile-stat-number" id="profileJobsDone">4</span>
+              <span class="profile-stat-number" id="profileJobsDone">0</span>
             </div>
 
             <div class="profile-stat-line">
               <span class="profile-stat-label">Jobs posted:</span>
-              <span class="profile-stat-number" id="profileJobsPosted">2</span>
+              <span class="profile-stat-number" id="profileJobsPosted">0</span>
             </div>
           </div>
 
@@ -258,8 +277,48 @@
 
   </main>
 
+  <!-- Loader + home stats script (kept separate so script.js stays untouched) -->
+  <script>
+    window.addEventListener('load', function () {
+      const loader = document.getElementById('loader');
+      const logoWrap = document.querySelector('.loader-logo-wrap');
+
+      function updateHomeStats() {
+        const jobs = window._TASKS || [];
+        const completed = jobs.filter(j => j.status === 'completed');
+        const jobsDone = completed.length;
+        const money = completed.reduce((sum, j) => sum + (Number(j.price) || 0), 0);
+
+        const jobsEl = document.getElementById('homeJobsDone');
+        const moneyEl = document.getElementById('homeMoneyMade');
+        if (jobsEl) jobsEl.textContent = jobsDone;
+        if (moneyEl) moneyEl.textContent = '$' + money.toFixed(0);
+      }
+
+      // smooth logo fly + fade out
+      if (loader && logoWrap) {
+        setTimeout(function () {
+          loader.classList.add('loader-fly');
+          document.body.classList.add('app-ready');
+
+          // home stats after jobs are loaded (script.js exposes window._TASKS)
+          setTimeout(updateHomeStats, 80);
+
+          setTimeout(function () {
+            loader.classList.add('loader-hidden');
+          }, 700); // matches fly animation duration
+        }, 700);   // brief pause so it "floats" first
+      } else {
+        // fallback: just update stats
+        setTimeout(updateHomeStats, 80);
+      }
+    });
+  </script>
+
   <!-- Leaflet JS for map -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Main app script (the one you already have) -->
   <script src="script.js"></script>
 </body>
 
