@@ -459,11 +459,26 @@ select {
 }
 
 .home-list-stat {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   gap: 8px;
   font-size: 14px;
   color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0 rgba(15, 23, 42, 0.0);
+  transform: translateY(0) scale(1);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.home-list-stat:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+  background: #ffffff;
 }
 
 .home-list-stat-label {
@@ -582,7 +597,7 @@ select {
 
 .profile-stats .profile-section-title {
   margin: 0 0 24px;
-  font-size: 40px;
+  font-size: 24px;
 }
 
 .profile-stat-line {
@@ -602,7 +617,7 @@ select {
 
 .profile-genres .profile-section-title {
   margin: 0 0 24px;
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .profile-genre-row {
@@ -611,7 +626,7 @@ select {
   align-items: center;
   column-gap: 16px;
   margin-bottom: 24px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .profile-genre-label {
@@ -619,7 +634,7 @@ select {
 }
 
 .profile-genre-bar {
-  height: 14px;
+  height: 18px;
   border-radius: 999px;
   background: #e5e7eb;
   overflow: hidden;
