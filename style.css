@@ -1,333 +1,364 @@
 :root {
-    --blue: #4C6EF5;
-    --panel-bg: #ffffff;
-    --muted: #6b7280;
-    --orange: #ff8a1f;
-    --accent-blue: #3B5BDB;
-    --card-shadow: 0 8px 24px rgba(11, 18, 36, 0.06);
+  --blue: #4C6EF5;
+  --panel-bg: #ffffff;
+  --muted: #6b7280;
+  --orange: #ff8a1f;
+  --accent-blue: #3B5BDB;
+  --card-shadow: 0 8px 24px rgba(11, 18, 36, 0.06);
 }
 
+/* Global typography */
 html,
 body,
 * {
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
-    font-feature-settings: "liga", "kern";
-    -webkit-font-smoothing: antialiased;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+  font-feature-settings: "liga", "kern";
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    background: var(--blue);
-    color: #071127;
-    min-height: 100vh;
+  margin: 0;
+  background: var(--blue);
+  color: #071127;
+  min-height: 100vh;
 }
 
-
-/* top nav */
+/* ========== TOP NAV ========== */
 .topnav {
-    padding: 18px 24px;
-    background: var(--blue);
-    color: white;
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.05);
+  padding: 18px 24px;
+  background: var(--blue);
+  color: white;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.05);
 }
 
+/* From view jobs: generic container + logo for nav */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logo {
+  height: 70px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Old nav-inner (kept in case you still use it anywhere) */
 .topnav .nav-inner {
-    max-width: 1180px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
+/* Menu (merged) */
 .menu {
-    list-style: none;
-    display: flex;
-    gap: 28px;
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  position: relative;
 }
 
 .menu li {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .menu li.active {
-    font-weight: 700;
-    text-decoration: underline;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
-/* main */
+/* ========== MAIN LAYOUT ========== */
 .page {
-    max-width: 1180px;
-    margin: 28px auto;
-    padding: 0 20px;
+  max-width: 1180px;
+  margin: 28px auto;
+  padding: 0 20px;
 }
 
 .panel {
-    background: var(--panel-bg);
-    border-radius: 18px;
-    padding: 28px;
-    box-shadow: var(--card-shadow);
-    min-height: 460px;
+  background: var(--panel-bg);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: var(--card-shadow);
+  min-height: 460px;
 }
 
 .panel.narrow {
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* new post-panel two-column layout */
+/* ========== POST JOB: TWO COLUMN LAYOUT ========== */
 .post-panel {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-}
-.post-left {
-    flex: 1 1 60%;
-}
-.post-right {
-    flex: 0 0 300px;
-    background: white;
-    border-radius: 12px;
-    padding: 12px;
-    min-height: 300px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 }
 
-/* tabs */
+.post-left {
+  flex: 1 1 60%;
+}
+
+.post-right {
+  flex: 0 0 300px;
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 300px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+/* ========== TABS (Orders) ========== */
 .tabs-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 16px;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .tab {
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: 1px solid #e9e9eb;
-    background: transparent;
-    cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #e9e9eb;
+  background: transparent;
+  cursor: pointer;
 }
 
 .tab.active {
-    background: black;
-    color: white;
+  background: black;
+  color: white;
 }
 
-/* job tile */
+/* ========== JOB TILES (Orders) ========== */
 .job-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 12px;
 }
 
 .job-tile {
-    width: 320px;
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background: white;
+  width: 320px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: white;
 }
 
 .row-top {
-    display: flex;
-    gap: 12px;
+  display: flex;
+  gap: 12px;
 }
 
 .img {
-    width: 80px;
-    height: 80px;
-    background: #e6e9ee;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: #e6e9ee;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .title {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .subtitle {
-    font-size: 13px;
-    color: var(--muted);
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .desc {
-    font-size: 13px;
-    margin-top: 4px;
+  font-size: 13px;
+  margin-top: 4px;
 }
 
 /* categories */
 .job-tile.ongoing {
-    border-color: var(--orange);
+  border-color: var(--orange);
 }
 
 .job-tile.previous {
-    border-color: var(--accent-blue);
+  border-color: var(--accent-blue);
 }
 
-/* form */
+/* ========== FORMS ========== */
 label {
-    margin-top: 12px;
-    display: block;
-    font-weight: 600;
+  margin-top: 12px;
+  display: block;
+  font-weight: 600;
 }
 
 input,
 textarea,
 select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 6px;
-    border: 1px solid #e6eef2;
-    border-radius: 6px;
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  border: 1px solid #e6eef2;
+  border-radius: 6px;
 }
 
 .row {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .btn {
-    padding: 8px 12px;
-    background: #1f9d95;
-    color: white;
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
+  padding: 8px 12px;
+  background: #1f9d95;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .btn.ghost {
-    background: transparent;
-    color: #1f9d95;
-    border: 1px solid rgba(31, 157, 149, 0.3);
+  background: transparent;
+  color: #1f9d95;
+  border: 1px solid rgba(31, 157, 149, 0.3);
 }
 
-/* waitlist / active listings */
+/* ========== ACTIVE LISTINGS (Post view) ========== */
 .active-listings {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.active-job {
-    border: 1px solid #f0f3f4;
-    padding: 10px;
-    border-radius: 8px;
-}
-.app-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border-bottom: 1px solid #eee;
-}
-.app-row:last-child { border-bottom: none; }
-.small {
-    color: var(--muted);
-    font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-/* modal (unused) */
+.active-job {
+  border: 1px solid #f0f3f4;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.app-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.app-row:last-child {
+  border-bottom: none;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ========== MODAL (unused) ========== */
 .modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.32);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-content {
-    width: 520px;
-    background: white;
-    border-radius: 10px;
-    padding: 18px;
+  width: 520px;
+  background: white;
+  border-radius: 10px;
+  padding: 18px;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
+/* ========== ORDERS HEADER ========== */
 .orders-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .orders-title {
-    font-size: 26px;
-    font-weight: bold;
-    margin: 0;
+  font-size: 26px;
+  font-weight: bold;
+  margin: 0;
 }
 
 .orders-select {
-    padding: 6px 10px;
-    font-size: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #fff;
-    width: auto;           /* This makes it shrink to content */
-    max-width: fit-content;
-    cursor: pointer;
-    white-space: nowrap;   /* prevents text from breaking */
+  padding: 6px 10px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  width: auto;
+  max-width: fit-content;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
+/* ========== HOME VIEW ========== */
 .home-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .home-hero h1 {
-    margin: 0 0 8px;
-    font-size: 28px;
+  margin: 0 0 8px;
+  font-size: 28px;
 }
 
 .home-hero p {
-    margin: 0 0 16px;
-    color: var(--muted);
+  margin: 0 0 16px;
+  color: var(--muted);
 }
 
 .home-cta-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn.primary {
-    background: #1f9d95;
-    color: white;
+  background: #1f9d95;
+  color: white;
 }
 
 .home-stats-row {
-    display: block;
-    flex-wrap: column;
-    gap: 16px;
+  display: block;
+  flex-wrap: column;
+  gap: 16px;
 }
 
 .home-stat-card {
-    flex: 150px;
-    background: #f3f4ff;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(11, 18, 36, 0.04);
+  flex: 150px;
+  background: #f3f4ff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(11, 18, 36, 0.04);
 }
 
 .home-stat-number {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
 .home-stat-label {
-    font-size: 13px;
-    color: var(--muted);
+  font-size: 13px;
+  color: var(--muted);
 }
 
 /* ========== PROFILE PAGE ========== */
@@ -390,7 +421,7 @@ select {
   font-size: 40px;
 }
 
-/* Rating pill like mock */
+/* Rating pill */
 .profile-rating-pill {
   display: inline-flex;
   align-items: center;
@@ -484,7 +515,7 @@ select {
   font-size: 16px;
 }
 
-/* Responsive tweaks */
+/* Responsive tweaks for profile */
 @media (max-width: 900px) {
   .profile-header {
     grid-template-columns: 1fr;
@@ -501,16 +532,121 @@ select {
   }
 }
 
-/* responsive */
-@media(max-width:980px) {
-    .post-panel { flex-direction: column; }
-    .post-right { width: 100%; }
+/* ========== FIND JOBS VIEW (from view jobs styles.css) ========== */
+
+/* Job results grid (right side) */
+#job-search {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 }
-@media(max-width:740px) {
-    .job-tile {
-        width: 100%;
-    }
-    .panel {
-        min-height: auto;
-    }
+
+/* Make the job-tile cards fill the grid nicely in Find Jobs */
+#job-search .job-tile {
+  width: 100%;
+}
+
+/* Job search panel */
+.job-panel {
+  background: white;
+  border-radius: 30px;
+  padding: 32px 40px;
+  box-shadow: var(--card-shadow);
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* Layout: filters sidebar (left) + results (right) */
+.layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* Filters column pinned to the left */
+.filters-panel {
+  width: 260px;
+  padding: 20px;
+  background: #f4f6ff;
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  text-align: left;
+  margin: 0;           /* was 0 auto – centres it; now flush to left */
+}
+
+.filters-panel h2 {
+  margin-top: 0;
+}
+
+.filters-panel select,
+.filters-panel input {
+  margin-bottom: 12px;
+}
+
+/* Job type checkboxes block */
+.job-type-filter div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.job-type-filter div label {
+  margin: 0;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+/* Limit checkbox width so they don't stretch */
+input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+/* We no longer use .job-card visually, but keep it soft just in case */
+.job-card {
+  background: #ede9ff;
+  color: black;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--card-shadow);
+  border: 2px solid #ccc;
+  transition: 0.2s ease;
+}
+
+.job-card:hover {
+  border-color: var(--accent-blue);
+}
+
+/* Request button */
+.request-btn {
+  padding: 8px 40px;
+  background-color: #3b5bdb;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.request-btn:hover {
+  background: #24cac7;
+}
+
+/* Responsive tweaks */
+@media (max-width: 740px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .filters-panel {
+    width: 100%;
+  }
+
+  #job-search {
+    grid-template-columns: 1fr;
+  }
 }
